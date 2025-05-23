@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
+import { useAuthStore } from '@/store/store';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -18,6 +19,7 @@ import { Label } from '@/components/ui/label';
 
 export default function LoginCard() {
   const router = useRouter();
+  const setUser = useAuthStore((state) => state.setUser);
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [error, setError] = React.useState<string | null>(null);
@@ -54,6 +56,13 @@ export default function LoginCard() {
       // Store tokens in cookies
       Cookies.set('access_token', data.access_token);
       Cookies.set('refresh_token', data.refresh_token);
+
+      // Store user data
+      setUser({
+        id: data.user.id,
+        name: data.user.name,
+        email: data.user.email,
+      });
 
       router.push('/dashboard');
     } catch (err: unknown) {
