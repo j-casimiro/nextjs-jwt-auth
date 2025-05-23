@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -49,14 +50,17 @@ export default function LoginCard() {
 
       const data = await res.json();
       console.log('Login success:', data);
-      // handle success (e.g. store token, redirect)
+
+      // Store tokens in cookies
+      Cookies.set('access_token', data.access_token);
+      Cookies.set('refresh_token', data.refresh_token);
 
       router.push('/dashboard');
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);
       } else {
-        setError('An error occured.');
+        setError('An error occurred.');
       }
     }
   };
